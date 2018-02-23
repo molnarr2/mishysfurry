@@ -7,16 +7,18 @@
 //
 
 #import "cocos2d.h"
+#import "CCBReader.h"
 
 #import "AppDelegate.h"
 #import "IntroLayer.h"
+#import "SceneManager.h"
 
 @implementation AppController
 
 @synthesize window=window_, navController=navController_, director=director_;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
+{    
 	// Create the main window
 	window_ = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
@@ -30,6 +32,8 @@
 								 multiSampling:NO
 							   numberOfSamples:0];
 
+    [glView setMultipleTouchEnabled:YES];
+    
 	director_ = (CCDirectorIOS*) [CCDirector sharedDirector];
 
 	director_.wantsFullScreenLayout = YES;
@@ -73,9 +77,14 @@
 	[CCTexture2D PVRImagesHavePremultipliedAlpha:YES];
 
 	// and add the scene to the stack. The director will run it when it automatically when the view is displayed.
-	[director_ pushScene: [IntroLayer scene]]; 
-
+    
+//	[director_ pushScene: [InGameMainLayer scene]];
 	
+    // Load in-game graphics.
+    [[InGameSpriteManager shared] loadInGameGraphics];
+    
+    [[SceneManager shared] startMainMenu:false];
+
 	// Create a Navigation Controller with the Director
 	navController_ = [[UINavigationController alloc] initWithRootViewController:director_];
 	navController_.navigationBarHidden = YES;
@@ -141,12 +150,5 @@
 	[[CCDirector sharedDirector] setNextDeltaTimeZero:YES];
 }
 
-- (void) dealloc
-{
-	[window_ release];
-	[navController_ release];
-
-	[super dealloc];
-}
 @end
 
